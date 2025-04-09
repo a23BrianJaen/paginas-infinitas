@@ -1,0 +1,182 @@
+[
+  {
+    "id": 1,
+    "title": "One Hundred Years of Solitude",
+    "author": "Gabriel García Márquez",
+    "year": 1967,
+    "genre": "Magical Realism",
+    "isbn": "978-0307474728",
+    "coverImage": "https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1327881361i/320.jpg"
+  },
+  {
+    "id": 2,
+    "title": "1984",
+    "author": "George Orwell",
+    "year": 1949,
+    "genre": "Dystopian",
+    "isbn": "978-0451524935",
+    "coverImage": "https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1657781256i/61439040.jpg"
+  },
+  {
+    "id": 3,
+    "title": "Don Quixote",
+    "author": "Miguel de Cervantes",
+    "year": 1605,
+    "genre": "Novel",
+    "isbn": "978-8420412146",
+    "coverImage": "https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1546112331i/3836.jpg"
+  },
+  {
+    "id": 4,
+    "title": "The Hobbit",
+    "author": "J.R.R. Tolkien",
+    "year": 1937,
+    "genre": "Fantasy",
+    "isbn": "978-0547928227",
+    "coverImage": "https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1546071216i/5907.jpg"
+  },
+  {
+    "id": 5,
+    "title": "Crime and Punishment",
+    "author": "Fyodor Dostoevsky",
+    "year": 1866,
+    "genre": "Psychological Fiction",
+    "isbn": "978-1451574289",
+    "coverImage": "https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1382846449i/7144.jpg"
+  },
+  {
+    "id": 6,
+    "title": "Pride and Prejudice",
+    "author": "Jane Austen",
+    "year": 1813,
+    "genre": "Romance Novel",
+    "isbn": "978-0141439518",
+    "coverImage": "https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1320399351i/1885.jpg"
+  },
+  {
+    "id": 7,
+    "title": "The Little Prince",
+    "author": "Antoine de Saint-Exupéry",
+    "year": 1943,
+    "genre": "Children's Literature",
+    "isbn": "978-0156012195",
+    "coverImage": "https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1367545443i/157993.jpg"
+  },
+  {
+    "id": 8,
+    "title": "To Kill a Mockingbird",
+    "author": "Harper Lee",
+    "year": 1960,
+    "genre": "Novel",
+    "isbn": "978-0061120084",
+    "coverImage": "https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1553383690i/2657.jpg"
+  },
+  {
+    "id": 9,
+    "title": "The Odyssey",
+    "author": "Homer",
+    "year": -800,
+    "genre": "Epic Poetry",
+    "isbn": "978-0140268867",
+    "coverImage": "https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1390173285i/1381.jpg"
+  },
+  {
+    "id": 10,
+    "title": "Fahrenheit 451",
+    "author": "Ray Bradbury",
+    "year": 1953,
+    "genre": "Dystopian",
+    "isbn": "978-1451673319",
+    "coverImage": "https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1383718290i/13079982.jpg"
+  },
+  {
+    "id": 11,
+    "title": "Les Misérables",
+    "author": "Victor Hugo",
+    "year": 1862,
+    "genre": "Historical Fiction",
+    "isbn": "978-0451419439",
+    "coverImage": "https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1411852091i/24280.jpg"
+  },
+  {
+    "id": 12,
+    "title": "The Metamorphosis",
+    "author": "Franz Kafka",
+    "year": 1915,
+    "genre": "Novella",
+    "isbn": "978-1557427663",
+    "coverImage": "https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1646444605i/485894.jpg"
+  },
+  {
+    "id": 13,
+    "title": "The Great Gatsby",
+    "author": "F. Scott Fitzgerald",
+    "year": 1925,
+    "genre": "Novel",
+    "isbn": "978-0743273565",
+    "coverImage": "https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1490528560i/4671.jpg"
+  },
+  {
+    "id": 14,
+    "title": "Romeo and Juliet",
+    "author": "William Shakespeare",
+    "year": 1597,
+    "genre": "Tragedy",
+    "isbn": "978-0743477116",
+    "coverImage": "https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1629680008i/18135.jpg"
+  },
+  {
+    "id": 15,
+    "title": "The Alchemist",
+    "author": "Paulo Coelho",
+    "year": 1988,
+    "genre": "Fiction",
+    "isbn": "978-0061122415",
+    "coverImage": "https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1654371463i/18144590.jpg"
+  },
+  {
+    "id": 16,
+    "title": "The Divine Comedy",
+    "author": "Dante Alighieri",
+    "year": 1320,
+    "genre": "Epic Poetry",
+    "isbn": "978-1503280296",
+    "coverImage": "https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1657414229i/6656.jpg"
+  },
+  {
+    "id": 17,
+    "title": "Open Veins of Latin America",
+    "author": "Eduardo Galeano",
+    "year": 1971,
+    "genre": "History",
+    "isbn": "978-0853459910",
+    "coverImage": "https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1320529239i/187149.jpg"
+  },
+  {
+    "id": 18,
+    "title": "The Lord of the Rings",
+    "author": "J.R.R. Tolkien",
+    "year": 1954,
+    "genre": "Fantasy",
+    "isbn": "978-0618640157",
+    "coverImage": "https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1566425108i/33.jpg"
+  },
+  {
+    "id": 19,
+    "title": "Hopscotch",
+    "author": "Julio Cortázar",
+    "year": 1963,
+    "genre": "Experimental Fiction",
+    "isbn": "978-8420406794",
+    "coverImage": "https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1389502145i/53413.jpg"
+  },
+  {
+    "id": 20,
+    "title": "Love in the Time of Cholera",
+    "author": "Gabriel García Márquez",
+    "year": 1985,
+    "genre": "Romance Novel",
+    "isbn": "978-0307389732",
+    "coverImage": "https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1327124987i/9712.jpg"
+  }
+]
