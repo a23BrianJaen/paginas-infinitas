@@ -9,7 +9,7 @@ export default function ClientBooks(book: Book) {
     <div className="flex flex-row place-content-center min-h-screen">
       <div className="flex justify-end items-center">
         <Image
-          className="rounded-xl"
+          className="rounded-xl hover:drop-shadow-[0_0_0.8rem_#ffffff90] transition-all duration-200 ease-in-out cursor-pointer scale-100 hover:scale-[1.07]"
           src={book.coverImage}
           alt={book.title}
           width={240}
