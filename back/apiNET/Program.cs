@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using apiNET.Services;
 using apiNET.Services.Interfaces;
 using apiNET.Data;
@@ -43,6 +44,9 @@ builder.Services.AddCors(options =>
     });
 });
 
+builder.Services.AddControllers()
+    .AddJsonOptions(options => { options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles; });
+
 var app = builder.Build();
 
 
@@ -64,7 +68,7 @@ app.UseHttpsRedirection();
 // Create a group for all book routes with the prefix "/api/books"
 var booksGroup = app.MapGroup("/api/books")
     .WithTags("Books"); //Add tag in Swagger for this group
-    // .RequireAuthorization(); // When requiere authorization with all routes
+// .RequireAuthorization(); // When requiere authorization with all routes
 
 // Route root to get all books
 booksGroup.MapGet("", async (IBookService bookService) =>

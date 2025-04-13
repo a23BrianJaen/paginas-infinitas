@@ -7,19 +7,19 @@ export default function Navbar() {
         href="/"
         className="text-gray-300 hover:text-amber-100 transition-colors duration-300 text-sm font-medium hover:drop-shadow-[0_0_0.6rem_#ffffff70]"
       >
-        Inicio
+        Home
       </Link>
       <Link
         href="/books"
         className="text-gray-300 hover:text-amber-100 transition-colors duration-300 text-sm font-medium hover:drop-shadow-[0_0_0.6rem_#ffffff70]"
       >
-        Catálogo de libros
+        Book catalog
       </Link>
       <Link
         href="/add-book"
         className="text-gray-300 hover:text-amber-100 transition-colors duration-300 text-sm font-medium hover:drop-shadow-[0_0_0.6rem_#ffffff70]"
       >
-        Añadir libro
+        Add book
       </Link>
     </nav>
   );

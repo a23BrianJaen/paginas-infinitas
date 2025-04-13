@@ -29,17 +29,17 @@ export default function ClientBooks(book: Book) {
 
           <div className="space-y-4">
             <h2 className="text-xl w-fit relative group">
-              <span>Autor: <strong className="text-amber-100">{book.author}</strong></span>
+              <span>Author: <strong className="text-amber-100">{book.author}</strong></span>
               <span className="absolute bottom-0 left-1/2 w-0 h-[1px] bg-amber-100 group-hover:w-full group-hover:left-0 transition-all duration-500 ease-in-out"></span>
             </h2>
 
             <h2 className="text-xl w-fit relative group">
-              <span>Género: <strong className="text-amber-100">{book.genre}</strong></span>
+              <span>Genre: <strong className="text-amber-100">{book.genre}</strong></span>
               <span className="absolute bottom-0 left-1/2 w-0 h-[1px] bg-amber-100 group-hover:w-full group-hover:left-0 transition-all duration-500 ease-in-out"></span>
             </h2>
 
             <h2 className="text-xl w-fit relative group">
-              <span>Año: <strong className="text-amber-100">{book.year}</strong></span>
+              <span>Year: <strong className="text-amber-100">{book.year}</strong></span>
               <span className="absolute bottom-0 left-1/2 w-0 h-[1px] bg-amber-100 group-hover:w-full group-hover:left-0 transition-all duration-500 ease-in-out"></span>
             </h2>
 

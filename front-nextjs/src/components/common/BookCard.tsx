@@ -12,12 +12,10 @@ export default function BookCard({ book }: { book: Book }) {
 
   const handleImageClick = (id: number) => {
     router.push(`${pathname}/${id}`);
-    console.log(`${pathname}/${id}`);
-
   }
 
   return (
-    <div className="drop-shadow-[0_0_0.8rem_#ffffff90] rounded-xl">
+    <div className="drop-shadow-[0_0_0.6rem_#ffffff90] hover:drop-shadow-[0_0_0.6rem_#fef3c6] scale-100 hover:scale-[1.03] transition duration-200 rounded-xl">
       <Image
         className="rounded-xl cursor-pointer"
         src={book.coverImage}

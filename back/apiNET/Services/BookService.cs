@@ -1,5 +1,6 @@
 using apiNET.Data;
 using apiNET.Models;
+using apiNET.DTOs.ResponseDtos;
 using apiNET.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
@@ -15,7 +16,7 @@ public class BookService : IBookService
         _logger = logger;
         _context = context;
     }
-    
+
     public async Task<Book> PostBookAsync(Book book)
     {
         try
@@ -31,18 +32,84 @@ public class BookService : IBookService
         }
     }
 
-    public async Task<IEnumerable<Book>> GetBooksAsync()
+    public async Task<IEnumerable<BookResponseDto>> GetBooksAsync()
     {
         try
         {
-            var books = await _context.Books
+            return await _context.Books
+                .Include(b => b.Author)
+                .Include(b => b.BookTags)
+                .ThenInclude(bt => bt.Tag)
+                .Include(b => b.Genre)
+                .Include(b => b.BookSubGenres)
+                .ThenInclude(bsg => bsg.SubGenre)
+                .Include(b => b.BookAwards)
+                .ThenInclude(bsg => bsg.Award)
+                .Select(b => new BookResponseDto
+                {
+                    Id = b.Id,
+                    Title = b.Title,
+                    Year = b.Year,
+                    ISBN = b.ISBN,
+                    CoverImage = b.CoverImage,
+                    Publisher = b.Publisher,
+                    Language = b.Language,
+                    PageCount = b.PageCount,
+                    Format = b.Format,
+                    Price = b.Price,
+                    // Tags = b.Tags,
+                    Currency = b.Currency,
+                    InStock = b.InStock,
+                    Rating = b.Rating,
+                    ReviewCount = b.ReviewCount,
+                    Synopsis = b.Synopsis,
+                    TargetAudience = b.TargetAudience,
+                    ReadingTime = b.ReadingTime,
+                    PublicationDate = b.PublicationDate,
+                    Edition = b.Edition,
+                    Dimensions = b.Dimensions,
+                    Weight = b.Weight,
+                    SalesRank = b.SalesRank,
+                    MaturityRating = b.MaturityRating,
+                    Series = b.Series,
+                    SeriesOrder = b.SeriesOrder,
+                    TableOfContents = b.TableOfContents,
+                    FileSize = b.FileSize,
+                    WordCount = b.WordCount,
+                    Genre = new GenreResponseDto
+                    {
+                        Id = b.Genre.Id,
+                        Name = b.Genre.Name
+                    },
+                    SubGenre = b.BookSubGenres.Select(bsg => new SubGenresResponseDto()
+                    {
+                        Id = bsg.SubGenre.Id,
+                        Name = bsg.SubGenre.Name
+                    }).ToList(),
+                    Author = new AuthorResponseDto
+                    {
+                        Id = b.Author.Id,
+                        Name = b.Author.Name,
+                        Bio = b.Author.Bio,
+                        ImageUrl = b.Author.ImageUrl
+                    },
+                    Tags = b.BookTags.Select(bt => new TagsResponseDto()
+                    {
+                        Id = bt.Tag.Id,
+                        Name = bt.Tag.Name
+                    }).ToList(),
+                    Awards = b.BookAwards.Select(ba => new AwardsResponseDto()
+                    {
+                        Id = ba.Award.Id,
+                        Name = ba.Award.Name,
+                    }).ToList()
+                })
                 .ToListAsync();
-            return books;
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error al obtener todos los libros");
-            return Enumerable.Empty<Book>();
+            return Enumerable.Empty<BookResponseDto>();
         }
     }
 
