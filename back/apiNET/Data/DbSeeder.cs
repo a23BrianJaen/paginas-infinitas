@@ -1,5 +1,5 @@
 using System.Text.Json;
-using apiNET.DTOs.ResponseDtos;
+using apiNET.DTOs.ImportDtos;
 using apiNET.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -63,17 +63,17 @@ public static class DbSeeder
                 try
                 {
                     // Get or create the author
-                    if (!authorDict.TryGetValue(bookDto.Author.Name, out var author))
+                    if (!authorDict.TryGetValue(bookDto.Author, out var author))
                     {
                         author = await GetOrCreateAuthor(dbContext, bookDto);
-                        authorDict[bookDto.Author.Name] = author;
+                        authorDict[bookDto.Author] = author;
                     }
 
                     // Get or create the genre
-                    if (!genreDict.TryGetValue(bookDto.Genre.Name, out var genre))
+                    if (!genreDict.TryGetValue(bookDto.Genre, out var genre))
                     {
-                        genre = await GetOrCreateGenre(dbContext, bookDto.Genre.Name);
-                        genreDict[bookDto.Genre.Name] = genre;
+                        genre = await GetOrCreateGenre(dbContext, bookDto.Genre);
+                        genreDict[bookDto.Genre] = genre;
                     }
 
                     // Create the book
@@ -139,7 +139,7 @@ public static class DbSeeder
         }
     }
 
-    private static List<BookResponseDto>? DeserializeJson(string json, ILogger logger)
+    private static List<BookImportDto>? DeserializeJson(string json, ILogger logger)
     {
         try
         {
@@ -150,7 +150,7 @@ public static class DbSeeder
                 ReadCommentHandling = JsonCommentHandling.Skip
             };
 
-            return JsonSerializer.Deserialize<List<BookResponseDto>>(json, options);
+            return JsonSerializer.Deserialize<List<BookImportDto>>(json, options);
         }
         catch (JsonException ex)
         {
@@ -162,27 +162,28 @@ public static class DbSeeder
     private static async Task ProcessRelationships(
         BookDbContext dbContext,
         Book book,
-        BookResponseDto bookDto,
+        BookImportDto bookDto,
         Dictionary<string, SubGenre> subGenreDict,
         Dictionary<string, Tag> tagDict,
         Dictionary<string, Award> awardDict)
     {
         // Process SubGenres
-        if (bookDto.SubGenre?.Any() == true)
+        if (bookDto.SubGenres?.Any() == true)
         {
-            foreach (var subGenreName in bookDto.SubGenre)
+            foreach (var subGenreName in bookDto.SubGenres)
             {
-                if (!subGenreDict.TryGetValue(subGenreName.Name, out var subGenre))
+                if (!subGenreDict.TryGetValue(subGenreName, out var subGenre))
                 {
-                    subGenre = await GetOrCreateSubGenre(dbContext, subGenreName.Name);
-                    subGenreDict[subGenreName.Name] = subGenre;
+                    subGenre = await GetOrCreateSubGenre(dbContext, subGenreName);
+                    subGenreDict[subGenreName] = subGenre;
                 }
 
-                dbContext.BookSubGenres.Add(new BookSubGenre
+                var bookSubGenre = new BookSubGenre
                 {
-                    Book = book,
-                    SubGenre = subGenre
-                });
+                    BookId = book.Id,
+                    SubGenreId = subGenre.Id
+                };
+                dbContext.BookSubGenres.Add(bookSubGenre);
             }
         }
 
@@ -191,10 +192,10 @@ public static class DbSeeder
         {
             foreach (var tagName in bookDto.Tags)
             {
-                if (!tagDict.TryGetValue(tagName.Name, out var tag))
+                if (!tagDict.TryGetValue(tagName, out var tag))
                 {
-                    tag = await GetOrCreateTag(dbContext, tagName.Name);
-                    tagDict[tagName.Name] = tag;
+                    tag = await GetOrCreateTag(dbContext, tagName);
+                    tagDict[tagName] = tag;
                 }
 
                 dbContext.BookTags.Add(new BookTag
@@ -210,10 +211,10 @@ public static class DbSeeder
         {
             foreach (var awardName in bookDto.Awards)
             {
-                if (!awardDict.TryGetValue(awardName.Name, out var award))
+                if (!awardDict.TryGetValue(awardName, out var award))
                 {
-                    award = await GetOrCreateAward(dbContext, awardName.Name);
-                    awardDict[awardName.Name] = award;
+                    award = await GetOrCreateAward(dbContext, awardName);
+                    awardDict[awardName] = award;
                 }
 
                 dbContext.BookAwards.Add(new BookAward
@@ -225,20 +226,20 @@ public static class DbSeeder
         }
     }
 
-    private static async Task<Author> GetOrCreateAuthor(BookDbContext dbContext, BookResponseDto bookDto)
+    private static async Task<Author> GetOrCreateAuthor(BookDbContext dbContext, BookImportDto bookDto)
     {
         // Buscar autor existente por nombre
         var author = await dbContext.Authors
-            .FirstOrDefaultAsync(a => a.Name == bookDto.Author.Name);
+            .FirstOrDefaultAsync(a => a.Name == bookDto.Author);
 
         if (author == null)
         {
-            // Crear nuevo autor sin especificar ID
+            // Crear nuevo autor usando los campos del JSON
             author = new Author
             {
-                Name = bookDto.Author.Name,
-                Bio = bookDto.Author.Bio ?? "",
-                ImageUrl = bookDto.Author.ImageUrl ?? ""
+                Name = bookDto.Author,
+                Bio = bookDto.AuthorBio,
+                ImageUrl = bookDto.AuthorImage
             };
             await dbContext.Authors.AddAsync(author);
             await dbContext.SaveChangesAsync();

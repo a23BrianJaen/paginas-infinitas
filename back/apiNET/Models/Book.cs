@@ -19,8 +19,6 @@ public class Book
     public string? Synopsis { get; set; }
     public string? TargetAudience { get; set; }
     public string? ReadingTime { get; set; }
-    // public string? AuthorBio { get; set; }
-    // public string? AuthorImage { get; set; }
     public string? PublicationDate { get; set; }
     public string? Edition { get; set; }
     public string? Dimensions { get; set; }

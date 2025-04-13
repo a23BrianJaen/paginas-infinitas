@@ -24,7 +24,7 @@ public class BookResponseDto
     public List<AwardsResponseDto> Awards { get; set; }
     public string TargetAudience { get; set; }
     public string ReadingTime { get; set; }
-    public AuthorResponseDto Author { get; set; }
+    public AuthorResponseDto Author { get; set; } 
     public string PublicationDate { get; set; }
     public string Edition { get; set; }
     public string Dimensions { get; set; }
