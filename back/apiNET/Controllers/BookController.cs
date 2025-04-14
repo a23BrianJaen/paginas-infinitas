@@ -132,7 +132,6 @@ public class BookController : ControllerBase
     [HttpGet("genre/{genre}")]
     public async Task<IActionResult> SearchByGenre(string genre)
     {
-        Console.WriteLine(genre);
         try
         {
             var books = await _bookService.SearchByGenreAsync(genre);
@@ -146,6 +145,66 @@ public class BookController : ControllerBase
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error searching for books by genre {Genre}", genre);
+            return BadRequest(ex.Message);
+        }
+    }
+
+    [HttpGet("subGenre/{subGenre}")]
+    public async Task<IActionResult> SearchBySubGenre(string subGenre)
+    {
+        try
+        {
+            var books = await _bookService.SearchBySubGenreAsync(subGenre);
+            if (books == null)
+            {
+                return NotFound($"Book with genre {subGenre} not found");
+            }
+
+            return Ok(books);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error searching for books by genre {SubGenre}", subGenre);
+            return BadRequest(ex.Message);
+        }
+    }
+
+    [HttpGet("tag/{tag}")]
+    public async Task<IActionResult> SearchByTag(string tag)
+    {
+        try
+        {
+            var books = await _bookService.SearchByTagAsync(tag);
+            if (books == null)
+            {
+                return NotFound($"Book with tag {tag} not found");
+            }
+
+            return Ok(books);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error searching for books by genre {Tag}", tag);
+            return BadRequest(ex.Message);
+        }
+    }
+
+    [HttpGet("award/{award}")]
+    public async Task<IActionResult> SearchByAward(string award)
+    {
+        try
+        {
+            var books = await _bookService.SearchByAwardAsync(award);
+            if (books == null)
+            {
+                return NotFound($"Book with award {award} not found");
+            }
+
+            return Ok(books);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error searching for books by genre {Award}", award);
             return BadRequest(ex.Message);
         }
     }

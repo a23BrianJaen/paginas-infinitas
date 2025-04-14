@@ -4,12 +4,10 @@ namespace apiNET.DTOs.CreateDtos;
 
 public class BookCreateDto
 {
-    [Required]
-    public string Title { get; set; } = string.Empty;
-    
-    [Required]
-    public int Year { get; set; }
-    
+    [Required] public string Title { get; set; } = string.Empty;
+
+    [Required] public int Year { get; set; }
+
     public string? ISBN { get; set; }
     public string? CoverImage { get; set; }
     public string? Publisher { get; set; }
@@ -35,15 +33,13 @@ public class BookCreateDto
     public string? TableOfContents { get; set; }
     public string? FileSize { get; set; }
     public int? WordCount { get; set; }
-    
-    [Required]
-    public int? AuthorId { get; set; }
+
+    [Required] public int? AuthorId { get; set; }
     public AuthorCreateDto? NewAuthor { get; set; }
-    
-    [Required]
-    public int? GenreId { get; set; }
+
+    [Required] public int? GenreId { get; set; }
     public GenreCreateDto? NewGenre { get; set; }
-    
+
     // Many-to-many relations
     public List<int>? SubGenreIds { get; set; }
     public List<int>? TagIds { get; set; }

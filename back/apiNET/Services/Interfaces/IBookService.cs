@@ -7,12 +7,16 @@ namespace apiNET.Services.Interfaces;
 
 public interface IBookService
 {
+    Task<BookResponseDto> CreateBookAsync(BookCreateDto bookCreateDto);
     Task<IEnumerable<BookResponseDto>> GetBooksAsync();
     Task<BookResponseDto> GetBookByIdAsync(int id);
     Task<IEnumerable<BookResponseDto>> SearchByTitleAsync(string title);
     Task<IEnumerable<BookResponseDto>> SearchByAuthorAsync(string author);
     Task<IEnumerable<BookResponseDto>> SearchByGenreAsync(string genre);
-    Task<BookResponseDto> CreateBookAsync(BookCreateDto bookCreateDto);
+    Task<IEnumerable<BookResponseDto>> SearchBySubGenreAsync(string subGenre);
+    Task<IEnumerable<BookResponseDto>> SearchByTagAsync(string tag);
+    
+    Task<IEnumerable<BookResponseDto>> SearchByAwardAsync(string award);
     Task<IEnumerable<BookResponseDto>> UpdateBookAsync(int id, BookUpdateDto updateData);
     Task<bool> DeleteBookAsync(int id);
 }

@@ -313,7 +313,7 @@ public class BookService : IBookService
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "{Red}Error al obtener el libro con titulo: {Id} {Reset}", RED, id, RESET);
+            _logger.LogError(ex, "{Red}Error al obtener el libro con id: {Id} {Reset}", RED, id, RESET);
             return null;
         }
     }
@@ -363,28 +363,56 @@ public class BookService : IBookService
         }
     }
 
-    // public async Task<IEnumerable<BookResponseDto>> SearchBySubGenreAsync(string genre)
-    // {
-    //     try
-    //     {
-    //         
-    //     }
-    //     catch (Exception ex)
-    //     {
-    //         _logger.LogError("Error al obtener el genero del libro: {Genre}", genre);
-    //         return Enumerable.Empty<BookResponseDto>();
-    //     }
-    // }
+    public async Task<IEnumerable<BookResponseDto>> SearchBySubGenreAsync(string subGenre)
+    {
+        try
+        {
+            _logger.LogInformation($"{GREEN}Browsing books by sub genre {subGenre}{RESET}");
 
-    // public async Task<IEnumerable<BookResponseDto>> SearchByTagAsync(string tag)
-    // {
-    //     
-    // }
+            return await GetBookQuery()
+                .Where(book => book.SubGenre.Any(sg => EF.Functions.Like(sg.Name, $"%{subGenre}%")))
+                .ToListAsync();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("Error al obtener el sub genero del libro: {SubGenre}", subGenre);
+            return Enumerable.Empty<BookResponseDto>();
+        }
+    }
 
-    // public async Task<IEnumerable<BookResponseDto>> SearchByAwardAsync(string award)
-    // {
-    //     
-    // }
+    public async Task<IEnumerable<BookResponseDto>> SearchByTagAsync(string tag)
+    {
+        try
+        {
+            _logger.LogInformation($"{GREEN}Browsing books by sub genre {tag}{RESET}");
+
+            return await GetBookQuery()
+                .Where(book => book.Tags.Any(t => EF.Functions.Like(t.Name, $"%{tag}%")))
+                .ToListAsync();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("Error al obtener el etiqueta del libro: {Tag}", tag);
+            return Enumerable.Empty<BookResponseDto>();
+        }
+    }
+
+    public async Task<IEnumerable<BookResponseDto>> SearchByAwardAsync(string award)
+    {
+        try
+        {
+            _logger.LogInformation($"{GREEN}Browsing books by award {award}{RESET}");
+
+            return await GetBookQuery()
+                .Where(book => book.Awards.Any(a => EF.Functions.Like(a.Name, $"%{award}%")))
+                .ToListAsync();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("Error al obtener el premio del libro: {Award}", award);
+            return Enumerable.Empty<BookResponseDto>();
+        }
+    }
 
     public async Task<IEnumerable<BookResponseDto>> UpdateBookAsync(int id, BookUpdateDto updateData)
     {
