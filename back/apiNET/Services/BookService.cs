@@ -297,4 +297,37 @@ public class BookService : IBookService
             return Enumerable.Empty<BookResponseDto>();
         }
     }
+    
+    public async Task<bool> DeleteBookAsync(int id)
+    {
+        try
+        {
+            _logger.LogInformation($"{GREEN}Deleting book with ID {id}{RESET}");
+
+            // Browse book by id
+            var bookToDelete = await _context.Books
+                .Include(b => b.BookSubGenres)
+                .Include(b => b.BookTags)
+                .Include(b => b.BookAwards)
+                .FirstOrDefaultAsync(b => b.Id == id);
+
+            if (bookToDelete == null)
+            {
+                _logger.LogWarning($"{RED}Book not found with ID {id}{RESET}");
+                return false;
+            }
+
+            // Delete book (Entity framework will handle delete the relationships)
+            _context.Books.Remove(bookToDelete);
+            await _context.SaveChangesAsync();
+
+            _logger.LogInformation($"{GREEN}Book with ID {id} deleted successfully{RESET}");
+            return true;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "{Red}Error al eliminar el libro con ID {Id}{Reset}", RED, id, RESET);
+            return false;
+        }
+    }
 }

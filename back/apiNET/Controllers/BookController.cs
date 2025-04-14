@@ -133,4 +133,24 @@ public class BookController : ControllerBase
             return BadRequest(ex.Message);
         }
     }
+    
+    [HttpDelete("delete/{id}")]
+    public async Task<IActionResult> DeleteBook(int id)
+    {
+        try
+        {
+            var result = await _bookService.DeleteBookAsync(id);
+            if (!result)
+            {
+                return NotFound($"Book with ID {id} not found");
+            }
+
+            return Ok(new { message = $"Book with ID {id} deleted successfully" });
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error deleting book with id {Id}", id);
+            return BadRequest(ex.Message);
+        }
+    }
 }
