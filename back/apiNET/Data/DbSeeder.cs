@@ -57,7 +57,7 @@ public static class DbSeeder
             var subGenreDict = new Dictionary<string, SubGenre>();
             var tagDict = new Dictionary<string, Tag>();
             var awardDict = new Dictionary<string, Award>();
-            
+
             foreach (var bookDto in bookDtos)
             {
                 try
@@ -118,7 +118,7 @@ public static class DbSeeder
 
                     // Process relationships in batches
                     await ProcessRelationships(dbContext, book, bookDto, subGenreDict, tagDict, awardDict);
-                    
+
                     logger.LogInformation($"{GREEN}Successfully imported book: {bookDto.Title}{RESET}");
                 }
                 catch (Exception ex)

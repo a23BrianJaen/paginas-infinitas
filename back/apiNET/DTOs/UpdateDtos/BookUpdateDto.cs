@@ -1,9 +1,10 @@
-namespace apiNET.Models;
+using apiNET.Models;
 
-public class Book
+namespace apiNET.DTOs.UpdateDtos;
+
+public class BookUpdateDto
 {
-    public int Id { get; set; }
-    public string Title { get; set; }
+    public string? Title { get; set; }
     public int Year { get; set; }
     public string? ISBN { get; set; }
     public string? CoverImage { get; set; }
@@ -30,15 +31,11 @@ public class Book
     public string? TableOfContents { get; set; }
     public string? FileSize { get; set; }
     public int? WordCount { get; set; }
+    public int Author { get; set; }
+    public int Genre { get; set; }
 
-    // Relations
-    public int AuthorId { get; set; }
-    public Author Author { get; set; }
-    public int GenreId { get; set; }
-    public Genre Genre { get; set; }
-
-    // Collection for relations for many-to-many
-    public ICollection<BookSubGenre> BookSubGenres { get; set; } = new List<BookSubGenre>();
-    public ICollection<BookTag> BookTags { get; set; } = new List<BookTag>();
-    public ICollection<BookAward> BookAwards { get; set; } = new List<BookAward>();
+    // Update relations many-to-many
+    public List<int>? SubGenres { get; set; }
+    public List<int>? Tags { get; set; }
+    public List<int>? Awards { get; set; }
 }

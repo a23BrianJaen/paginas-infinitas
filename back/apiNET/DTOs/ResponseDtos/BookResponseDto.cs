@@ -7,7 +7,7 @@ public class BookResponseDto
     public string Title { get; set; }
     public int Year { get; set; }
     public GenreResponseDto Genre { get; set; }
-    public List<SubGenresResponseDto> SubGenre { get; set; } = new ();
+    public List<SubGenresResponseDto> SubGenre { get; set; } = new();
     public string ISBN { get; set; }
     public string CoverImage { get; set; }
     public string Publisher { get; set; }
@@ -24,7 +24,7 @@ public class BookResponseDto
     public List<AwardsResponseDto> Awards { get; set; }
     public string TargetAudience { get; set; }
     public string ReadingTime { get; set; }
-    public AuthorResponseDto Author { get; set; } 
+    public AuthorResponseDto Author { get; set; }
     public string PublicationDate { get; set; }
     public string Edition { get; set; }
     public string Dimensions { get; set; }
