@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using apiNET.Services.Interfaces;
 using apiNET.DTOs.UpdateDtos;
+using apiNET.DTOs.CreateDtos;
 using apiNET.Models;
 
 namespace apiNET.Controllers;
@@ -29,6 +30,41 @@ public class BookController : ControllerBase
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error getting books");
+            return BadRequest(ex.Message);
+        }
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> CreateBook([FromBody] BookCreateDto bookCreateDto)
+    {
+        try
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            // Validación adicional
+            if (!bookCreateDto.AuthorId.HasValue && bookCreateDto.NewAuthor == null)
+            {
+                return BadRequest("Se requiere proporcionar ExistingAuthorId o NewAuthor");
+            }
+
+            var newBook = await _bookService.CreateBookAsync(bookCreateDto);
+            if (newBook == null)
+            {
+                return BadRequest("No se pudo crear el libro. Verifica que los datos proporcionados sean válidos.");
+            }
+
+            return CreatedAtAction(
+                nameof(GetBook),
+                new { id = newBook.Id },
+                newBook
+            );
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error creating new book");
             return BadRequest(ex.Message);
         }
     }
@@ -133,7 +169,7 @@ public class BookController : ControllerBase
             return BadRequest(ex.Message);
         }
     }
-    
+
     [HttpDelete("delete/{id}")]
     public async Task<IActionResult> DeleteBook(int id)
     {

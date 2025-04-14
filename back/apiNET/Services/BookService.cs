@@ -2,6 +2,7 @@ using apiNET.Data;
 using apiNET.Models;
 using apiNET.DTOs.ResponseDtos;
 using apiNET.DTOs.UpdateDtos;
+using apiNET.DTOs.CreateDtos;
 using apiNET.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
@@ -93,17 +94,200 @@ public class BookService : IBookService
         _context = context;
     }
 
-    public async Task<Book> PostBookAsync(Book book)
+    public async Task<BookResponseDto> CreateBookAsync(BookCreateDto bookCreateDto)
     {
         try
         {
-            _context.Books.Add(book);
+            _logger.LogInformation($"{GREEN}Creating new book: {bookCreateDto.Title}{RESET}");
+
+            // Genre management
+            int genreId;
+
+            if (bookCreateDto.GenreId.HasValue)
+            {
+                // Use existing author
+                var existingGenre = await _context.Genres.FindAsync(bookCreateDto.GenreId.Value);
+                if (existingGenre == null)
+                {
+                    _logger.LogWarning($"{RED}Author with ID {bookCreateDto.GenreId} not found{RESET}");
+                    return null;
+                }
+
+                genreId = existingGenre.Id;
+            }
+            else if (bookCreateDto.NewGenre != null)
+            {
+                // Browse if exists genre with that name
+                var existingGenre = await _context.Genres
+                    .FirstOrDefaultAsync(a => a.Name == bookCreateDto.NewGenre.Name);
+
+                if (existingGenre != null)
+                {
+                    // Use existing genre
+                    genreId = existingGenre.Id;
+                }
+                else
+                {
+                    // Create new genre
+                    var newGenre = new Genre
+                    {
+                        Name = bookCreateDto.NewGenre.Name,
+                    };
+
+                    _context.Genres.Add(newGenre);
+                    await _context.SaveChangesAsync();
+                    genreId = newGenre.Id;
+                }
+            }
+            else
+            {
+                _logger.LogWarning($"{RED}Neither ExistingAuthorId nor NewAuthor provided{RESET}");
+                return null;
+            }
+
+            // Author management
+            int authorId;
+
+            if (bookCreateDto.AuthorId.HasValue)
+            {
+                // Use author exists
+                var existingAuthor = await _context.Authors.FindAsync(bookCreateDto.AuthorId.Value);
+                if (existingAuthor == null)
+                {
+                    _logger.LogWarning($"{RED}Author with ID {bookCreateDto.AuthorId} not found{RESET}");
+                    return null;
+                }
+
+                authorId = existingAuthor.Id;
+            }
+            else if (bookCreateDto.NewAuthor != null)
+            {
+                // Browse if exists author with that name
+                var existingAuthor = await _context.Authors
+                    .FirstOrDefaultAsync(a => a.Name == bookCreateDto.NewAuthor.Name);
+
+                if (existingAuthor != null)
+                {
+                    // Use the existing author
+                    authorId = existingAuthor.Id;
+                }
+                else
+                {
+                    // Create a new author
+                    var newAuthor = new Author
+                    {
+                        Name = bookCreateDto.NewAuthor.Name,
+                        Bio = bookCreateDto.NewAuthor.Bio,
+                        ImageUrl = bookCreateDto.NewAuthor.ImageUrl
+                    };
+
+                    _context.Authors.Add(newAuthor);
+                    await _context.SaveChangesAsync();
+                    authorId = newAuthor.Id;
+                }
+            }
+            else
+            {
+                _logger.LogWarning($"{RED}Neither ExistingAuthorId nor NewAuthor provided{RESET}");
+                return null;
+            }
+
+            // Create book
+            var newBook = new Book
+            {
+                Title = bookCreateDto.Title,
+                Year = bookCreateDto.Year,
+                ISBN = bookCreateDto.ISBN,
+                CoverImage = bookCreateDto.CoverImage,
+                Publisher = bookCreateDto.Publisher,
+                Language = bookCreateDto.Language,
+                PageCount = bookCreateDto.PageCount,
+                Format = bookCreateDto.Format,
+                Price = bookCreateDto.Price,
+                Currency = bookCreateDto.Currency,
+                InStock = bookCreateDto.InStock,
+                Rating = bookCreateDto.Rating,
+                ReviewCount = bookCreateDto.ReviewCount,
+                Synopsis = bookCreateDto.Synopsis,
+                TargetAudience = bookCreateDto.TargetAudience,
+                ReadingTime = bookCreateDto.ReadingTime,
+                PublicationDate = bookCreateDto.PublicationDate,
+                Edition = bookCreateDto.Edition,
+                Dimensions = bookCreateDto.Dimensions,
+                Weight = bookCreateDto.Weight,
+                SalesRank = bookCreateDto.SalesRank,
+                MaturityRating = bookCreateDto.MaturityRating,
+                Series = bookCreateDto.Series,
+                SeriesOrder = bookCreateDto.SeriesOrder,
+                TableOfContents = bookCreateDto.TableOfContents,
+                FileSize = bookCreateDto.FileSize,
+                WordCount = bookCreateDto.WordCount,
+                AuthorId = authorId,
+                GenreId = genreId
+            };
+
+            // Add book to database
+            _context.Books.Add(newBook);
             await _context.SaveChangesAsync();
-            return book;
+
+            // Process many-to-many relations
+            if (bookCreateDto.SubGenreIds != null && bookCreateDto.SubGenreIds.Any())
+            {
+                foreach (var subGenreId in bookCreateDto.SubGenreIds)
+                {
+                    if (await _context.SubGenres.AnyAsync(sg => sg.Id == subGenreId))
+                    {
+                        var bookSubGenre = new BookSubGenre
+                        {
+                            BookId = newBook.Id,
+                            SubGenreId = subGenreId
+                        };
+                        _context.BookSubGenres.Add(bookSubGenre);
+                    }
+                }
+            }
+
+            if (bookCreateDto.TagIds != null && bookCreateDto.TagIds.Any())
+            {
+                foreach (var tagId in bookCreateDto.TagIds)
+                {
+                    if (await _context.Tags.AnyAsync(t => t.Id == tagId))
+                    {
+                        var bookTag = new BookTag
+                        {
+                            BookId = newBook.Id,
+                            TagId = tagId
+                        };
+                        _context.BookTags.Add(bookTag);
+                    }
+                }
+            }
+
+            if (bookCreateDto.AwardIds != null && bookCreateDto.AwardIds.Any())
+            {
+                foreach (var awardId in bookCreateDto.AwardIds)
+                {
+                    if (await _context.Awards.AnyAsync(a => a.Id == awardId))
+                    {
+                        var bookAward = new BookAward
+                        {
+                            BookId = newBook.Id,
+                            AwardId = awardId
+                        };
+                        _context.BookAwards.Add(bookAward);
+                    }
+                }
+            }
+
+            await _context.SaveChangesAsync();
+
+            // Return new book created with all relations
+            return await GetBookQuery()
+                .FirstOrDefaultAsync(b => b.Id == newBook.Id);
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error al agregar el libro: {Book}", book);
+            _logger.LogError(ex, "{Red}Error al crear el libro: {Title}{Reset}", RED, bookCreateDto.Title, RESET);
             return null;
         }
     }
@@ -297,7 +481,7 @@ public class BookService : IBookService
             return Enumerable.Empty<BookResponseDto>();
         }
     }
-    
+
     public async Task<bool> DeleteBookAsync(int id)
     {
         try
