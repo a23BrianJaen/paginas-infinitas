@@ -4,15 +4,13 @@ using apiNET.DTOs.ResponseDtos;
 using apiNET.DTOs.UpdateDtos;
 using apiNET.DTOs.CreateDtos;
 using apiNET.Services.Interfaces;
+using apiNET.Utils;
 using Microsoft.EntityFrameworkCore;
 
 namespace apiNET.Services;
 
 public class BookService : IBookService
 {
-    private const string GREEN = "\u001b[32m";
-    private const string RED = "\u001b[31m";
-    private const string RESET = "\u001b[0m";
 
     private readonly BookDbContext _context;
     private readonly ILogger<BookService> _logger;
@@ -98,7 +96,7 @@ public class BookService : IBookService
     {
         try
         {
-            _logger.LogInformation($"{GREEN}Creating new book: {bookCreateDto.Title}{RESET}");
+            _logger.LogInformation($"{ConsoleColors.GREEN}Creating new book: {bookCreateDto.Title}{ConsoleColors.RESET}");
 
             // Genre management
             int genreId;
@@ -109,7 +107,7 @@ public class BookService : IBookService
                 var existingGenre = await _context.Genres.FindAsync(bookCreateDto.GenreId.Value);
                 if (existingGenre == null)
                 {
-                    _logger.LogWarning($"{RED}Author with ID {bookCreateDto.GenreId} not found{RESET}");
+                    _logger.LogWarning($"{ConsoleColors.RED}Author with ID {bookCreateDto.GenreId} not found{ConsoleColors.RESET}");
                     return null;
                 }
 
@@ -141,7 +139,7 @@ public class BookService : IBookService
             }
             else
             {
-                _logger.LogWarning($"{RED}Neither ExistingAuthorId nor NewAuthor provided{RESET}");
+                _logger.LogWarning($"{ConsoleColors.RED}Neither ExistingAuthorId nor NewAuthor provided{ConsoleColors.RESET}");
                 return null;
             }
 
@@ -154,7 +152,7 @@ public class BookService : IBookService
                 var existingAuthor = await _context.Authors.FindAsync(bookCreateDto.AuthorId.Value);
                 if (existingAuthor == null)
                 {
-                    _logger.LogWarning($"{RED}Author with ID {bookCreateDto.AuthorId} not found{RESET}");
+                    _logger.LogWarning($"{ConsoleColors.RED}Author with ID {bookCreateDto.AuthorId} not found{ConsoleColors.RESET}");
                     return null;
                 }
 
@@ -188,7 +186,7 @@ public class BookService : IBookService
             }
             else
             {
-                _logger.LogWarning($"{RED}Neither ExistingAuthorId nor NewAuthor provided{RESET}");
+                _logger.LogWarning($"{ConsoleColors.RED}Neither ExistingAuthorId nor NewAuthor provided{ConsoleColors.RESET}");
                 return null;
             }
 
@@ -287,7 +285,7 @@ public class BookService : IBookService
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "{Red}Error al crear el libro: {Title}{Reset}", RED, bookCreateDto.Title, RESET);
+            _logger.LogError(ex, "{Red}Error al crear el libro: {Title}{Reset}", ConsoleColors.RED, bookCreateDto.Title, ConsoleColors.RESET);
             return null;
         }
     }
@@ -313,7 +311,7 @@ public class BookService : IBookService
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "{Red}Error al obtener el libro con id: {Id} {Reset}", RED, id, RESET);
+            _logger.LogError(ex, "{Red}Error al obtener el libro con id: {Id} {Reset}", ConsoleColors.RED, id, ConsoleColors.RESET);
             return null;
         }
     }
@@ -322,13 +320,13 @@ public class BookService : IBookService
     {
         try
         {
-            _logger.LogInformation($"{GREEN}Browsing books by author {title}{RESET}");
+            _logger.LogInformation($"{ConsoleColors.GREEN}Browsing books by author {title}{ConsoleColors.RESET}");
 
             return await GetBookQuery().Where(book => EF.Functions.Like(book.Title, $"%{title}%")).ToListAsync();
         }
         catch (Exception ex)
         {
-            _logger.LogError("{Red}Error al obtener el titulo del libro: {Title} {Rest}", RED, title, RESET);
+            _logger.LogError("{Red}Error al obtener el titulo del libro: {Title} {Rest}", ConsoleColors.RED, title, ConsoleColors.RESET);
             return Enumerable.Empty<BookResponseDto>();
         }
     }
@@ -337,13 +335,13 @@ public class BookService : IBookService
     {
         try
         {
-            _logger.LogInformation($"{GREEN}Browsing books by author {author}{RESET}");
+            _logger.LogInformation($"{ConsoleColors.GREEN}Browsing books by author {author}{ConsoleColors.RESET}");
 
             return await GetBookQuery().Where(book => EF.Functions.Like(book.Author.Name, $"%{author}%")).ToListAsync();
         }
         catch (Exception ex)
         {
-            _logger.LogError("{Red}Error al obtener el autor del libro: {Author} {Rest}", RED, author, RESET);
+            _logger.LogError("{Red}Error al obtener el autor del libro: {Author} {Rest}", ConsoleColors.RED, author, ConsoleColors.RESET);
             return Enumerable.Empty<BookResponseDto>();
         }
     }
@@ -352,13 +350,13 @@ public class BookService : IBookService
     {
         try
         {
-            _logger.LogInformation($"{GREEN}Browsing books by genre {genre}{RESET}");
+            _logger.LogInformation($"{ConsoleColors.GREEN}Browsing books by genre {genre}{ConsoleColors.RESET}");
 
             return await GetBookQuery().Where(book => EF.Functions.Like(book.Genre.Name, $"%{genre}%")).ToListAsync();
         }
         catch (Exception ex)
         {
-            _logger.LogError("{Red}Error al obtener el genero del libro: {Genre}{Reset}", RED, genre, RESET);
+            _logger.LogError("{Red}Error al obtener el genero del libro: {Genre}{Reset}", ConsoleColors.RED, genre, ConsoleColors.RESET);
             return Enumerable.Empty<BookResponseDto>();
         }
     }
@@ -367,7 +365,7 @@ public class BookService : IBookService
     {
         try
         {
-            _logger.LogInformation($"{GREEN}Browsing books by sub genre {subGenre}{RESET}");
+            _logger.LogInformation($"{ConsoleColors.GREEN}Browsing books by sub genre {subGenre}{ConsoleColors.RESET}");
 
             return await GetBookQuery()
                 .Where(book => book.SubGenre.Any(sg => EF.Functions.Like(sg.Name, $"%{subGenre}%")))
@@ -375,7 +373,7 @@ public class BookService : IBookService
         }
         catch (Exception ex)
         {
-            _logger.LogError("Error al obtener el sub genero del libro: {SubGenre}", subGenre);
+            _logger.LogError("{Red}Error al obtener el sub genero del libro: {SubGenre}{Reset}",ConsoleColors.RED, subGenre, ConsoleColors.RESET);
             return Enumerable.Empty<BookResponseDto>();
         }
     }
@@ -384,7 +382,7 @@ public class BookService : IBookService
     {
         try
         {
-            _logger.LogInformation($"{GREEN}Browsing books by sub genre {tag}{RESET}");
+            _logger.LogInformation($"{ConsoleColors.GREEN}Browsing books by sub genre {tag}{ConsoleColors.RESET}");
 
             return await GetBookQuery()
                 .Where(book => book.Tags.Any(t => EF.Functions.Like(t.Name, $"%{tag}%")))
@@ -392,7 +390,7 @@ public class BookService : IBookService
         }
         catch (Exception ex)
         {
-            _logger.LogError("Error al obtener el etiqueta del libro: {Tag}", tag);
+            _logger.LogError("{Red}Error al obtener el etiqueta del libro: {Tag}{Reset}",ConsoleColors.RED, tag, ConsoleColors.RESET);
             return Enumerable.Empty<BookResponseDto>();
         }
     }
@@ -401,7 +399,7 @@ public class BookService : IBookService
     {
         try
         {
-            _logger.LogInformation($"{GREEN}Browsing books by award {award}{RESET}");
+            _logger.LogInformation($"{ConsoleColors.GREEN}Browsing books by award {award}{ConsoleColors.RESET}");
 
             return await GetBookQuery()
                 .Where(book => book.Awards.Any(a => EF.Functions.Like(a.Name, $"%{award}%")))
@@ -409,7 +407,7 @@ public class BookService : IBookService
         }
         catch (Exception ex)
         {
-            _logger.LogError("Error al obtener el premio del libro: {Award}", award);
+            _logger.LogError("{Red}Error al obtener el premio del libro: {Award}{Reset}",ConsoleColors.RED, award, ConsoleColors.RESET);
             return Enumerable.Empty<BookResponseDto>();
         }
     }
@@ -418,7 +416,7 @@ public class BookService : IBookService
     {
         try
         {
-            _logger.LogInformation($"{GREEN}Updating book with ID {id}{RESET}");
+            _logger.LogInformation($"{ConsoleColors.GREEN}Updating book with ID {id}{ConsoleColors.RESET}");
 
             // Browsing book by id if exists with their all relations necessaries 
             var existingBook = await _context.Books
@@ -431,7 +429,7 @@ public class BookService : IBookService
 
             if (existingBook == null)
             {
-                _logger.LogWarning($"{RED}Book not found with ID {id}{RESET}");
+                _logger.LogWarning($"{ConsoleColors.RED}Book not found with ID {id}{ConsoleColors.RESET}");
                 return Enumerable.Empty<BookResponseDto>();
             }
 
@@ -505,7 +503,7 @@ public class BookService : IBookService
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "{Red}Error al actualizar el libro con ID {Id}{Reset}", RED, id, RESET);
+            _logger.LogError(ex, "{Red}Error al actualizar el libro con ID {Id}{Reset}", ConsoleColors.RED, id, ConsoleColors.RESET);
             return Enumerable.Empty<BookResponseDto>();
         }
     }
@@ -514,7 +512,7 @@ public class BookService : IBookService
     {
         try
         {
-            _logger.LogInformation($"{GREEN}Deleting book with ID {id}{RESET}");
+            _logger.LogInformation($"{ConsoleColors.GREEN}Deleting book with ID {id}{ConsoleColors.RESET}");
 
             // Browse book by id
             var bookToDelete = await _context.Books
@@ -525,7 +523,7 @@ public class BookService : IBookService
 
             if (bookToDelete == null)
             {
-                _logger.LogWarning($"{RED}Book not found with ID {id}{RESET}");
+                _logger.LogWarning($"{ConsoleColors.RED}Book not found with ID {id}{ConsoleColors.RESET}");
                 return false;
             }
 
@@ -533,12 +531,12 @@ public class BookService : IBookService
             _context.Books.Remove(bookToDelete);
             await _context.SaveChangesAsync();
 
-            _logger.LogInformation($"{GREEN}Book with ID {id} deleted successfully{RESET}");
+            _logger.LogInformation($"{ConsoleColors.GREEN}Book with ID {id} deleted successfully{ConsoleColors.RESET}");
             return true;
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "{Red}Error al eliminar el libro con ID {Id}{Reset}", RED, id, RESET);
+            _logger.LogError(ex, "{Red}Error al eliminar el libro con ID {Id}{Reset}", ConsoleColors.RED, id, ConsoleColors.RESET);
             return false;
         }
     }

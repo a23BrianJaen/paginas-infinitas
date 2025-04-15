@@ -2,6 +2,7 @@ using apiNET.Data;
 using apiNET.Models;
 using apiNET.DTOs.ResponseDtos;
 using apiNET.DTOs.UpdateDtos;
+using apiNET.Utils;
 using apiNET.DTOs.CreateDtos;
 using apiNET.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -30,7 +31,7 @@ public class AuthorService : IAuthorService
                 ImageUrl = a.ImageUrl
             });
     }
-    
+
     private IQueryable<BookResponseDto> GetBookQuery()
     {
         return _context.Books
@@ -102,8 +103,72 @@ public class AuthorService : IAuthorService
             });
     }
 
-    // TODO: Method to post a new author
-    
+    public async Task<AuthorOperationResponseDto> CreateAuthorAsync(AuthorCreateDto authorCreateDto)
+    {
+        try
+        {
+            _logger.LogInformation("{Green}Creating new author: {Name}{Reset}", ConsoleColors.GREEN,
+                authorCreateDto.Name, ConsoleColors.RESET);
+
+            // Verify if exists author with that name
+            var existingAuthor = await _context.Authors
+                .FirstOrDefaultAsync(a => a.Name == authorCreateDto.Name);
+
+            if (existingAuthor != null)
+            {
+                _logger.LogWarning("{Red}An author with the name {Name} already exists{Reset}", ConsoleColors.RED,
+                    authorCreateDto.Name, ConsoleColors.RESET);
+
+                // Return the existing author
+                return new AuthorOperationResponseDto
+                {
+                    Author = new AuthorResponseDto
+                    {
+                        Id = existingAuthor.Id,
+                        Name = existingAuthor.Name,
+                        Bio = existingAuthor.Bio,
+                        ImageUrl = existingAuthor.ImageUrl
+                    },
+                    Message = $"An author with the name {authorCreateDto.Name} already exists",
+                    IsNewAuthor = false,
+                    Success = false
+                };
+            }
+
+            // Add new author
+            var newAuthor = new Author
+            {
+                Name = authorCreateDto.Name,
+                Bio = authorCreateDto.Bio ?? string.Empty,
+                ImageUrl = authorCreateDto.ImageUrl ?? string.Empty
+            };
+
+            _context.Authors.Add(newAuthor);
+            await _context.SaveChangesAsync();
+
+            // Return the new author
+            return new AuthorOperationResponseDto
+            {
+                Author = new AuthorResponseDto
+                {
+                    Id = newAuthor.Id,
+                    Name = newAuthor.Name,
+                    Bio = newAuthor.Bio,
+                    ImageUrl = newAuthor.ImageUrl
+                },
+                Message = $"Author '{newAuthor.Name}' created successfully.",
+                IsNewAuthor = true,
+                Success = true
+            };
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "{Red}Error creating author: {Name}{Reset}", ConsoleColors.RED, authorCreateDto.Name,
+                ConsoleColors.RESET);
+            return null;
+        }
+    }
+
     public async Task<IEnumerable<AuthorResponseDto>> GetAuthorsAsync()
     {
         try
@@ -113,11 +178,12 @@ public class AuthorService : IAuthorService
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error al obtener todos los autores");
+            _logger.LogError(ex, "{Red}Error al obtener todos los autores{Reset}", ConsoleColors.RED,
+                ConsoleColors.RESET);
             return Enumerable.Empty<AuthorResponseDto>();
         }
     }
-    
+
     public async Task<IEnumerable<BookResponseDto>> GetBooksByAuthorAsync(int authorId)
     {
         try
@@ -128,11 +194,12 @@ public class AuthorService : IAuthorService
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error al obtener el autor {id}", authorId);
+            _logger.LogError(ex, "{Red}Error al obtener el autor {id}{Reset}", ConsoleColors.RED, authorId,
+                ConsoleColors.RESET);
             return null;
         }
     }
-    
+
     public async Task<AuthorResponseDto> GetAuthorByIdAsync(int id)
     {
         try
@@ -142,8 +209,86 @@ public class AuthorService : IAuthorService
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error al obtener el autor con id {Id}", id);
+            _logger.LogError(ex, "{Red}Error al obtener el autor con id {Id}{Reset}", ConsoleColors.RED, id,
+                ConsoleColors.RESET);
             return null;
+        }
+    }
+    
+    public async Task<IEnumerable<AuthorResponseDto>> SearchByAuthorAsync(string name) {
+        try
+        {
+            return await GetAuthorsQuery().Where(author => EF.Functions.Like(author.Name, $"%{name}%")).ToListAsync();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "{Red}Error al obtener el autor {name}{Reset}", ConsoleColors.RED, name,
+                ConsoleColors.RESET);
+            return null;
+        }
+    }
+    
+    public async Task<IEnumerable<AuthorResponseDto>> UpdateAuthorAsync(int id, AuthorUpdateDto updateAuthor)
+    {
+        try
+        {
+            _logger.LogInformation($"{ConsoleColors.GREEN}Updating author with ID {id}{ConsoleColors.RESET}");
+
+            var authorToUpdate = await _context.Authors
+                .FirstOrDefaultAsync(a => a.Id == id);
+
+            if (authorToUpdate == null)
+            {
+                _logger.LogWarning($"{ConsoleColors.RED}Author not found with ID {id}{ConsoleColors.RESET}");
+                return Enumerable.Empty<AuthorResponseDto>();
+            }
+
+            // Update author
+            authorToUpdate.Name = updateAuthor.Name ?? authorToUpdate.Name;
+            authorToUpdate.Bio = updateAuthor.Bio ?? authorToUpdate.Bio;
+            authorToUpdate.ImageUrl = updateAuthor.ImageUrl ?? authorToUpdate.ImageUrl;
+
+            _context.Authors.Update(authorToUpdate);
+            await _context.SaveChangesAsync();
+
+            _logger.LogInformation($"{ConsoleColors.GREEN}Author with ID {id} updated successfully{ConsoleColors.RESET}");
+
+            return await GetAuthorsQuery()
+                .Where(a => a.Id == id)
+                .ToListAsync();
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+    }
+
+    public async Task<bool> DeleteAuthorAsync(int id)
+    {
+        try
+        {
+            // Browse author by id
+            var authorToDelete = await _context.Authors
+                .FirstOrDefaultAsync(a => a.Id == id);
+
+            if (authorToDelete == null)
+            {
+                _logger.LogWarning($"{ConsoleColors.RED}Author not found with ID {id}{ConsoleColors.RESET}");
+                return false;
+            }
+
+            // Delete author (Entity framework will handle delete)
+            _context.Authors.Remove(authorToDelete);
+            await _context.SaveChangesAsync();
+
+            _logger.LogInformation($"{ConsoleColors.GREEN}Author with ID {id} deleted successfully{ConsoleColors.RESET}");
+            return true;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "{Red}Error al eliminar el autor con ID {Id}{Reset}", ConsoleColors.RED, id, ConsoleColors.RESET);
+            return false;
         }
     }
 }

@@ -15,7 +15,6 @@ public interface IBookService
     Task<IEnumerable<BookResponseDto>> SearchByGenreAsync(string genre);
     Task<IEnumerable<BookResponseDto>> SearchBySubGenreAsync(string subGenre);
     Task<IEnumerable<BookResponseDto>> SearchByTagAsync(string tag);
-    
     Task<IEnumerable<BookResponseDto>> SearchByAwardAsync(string award);
     Task<IEnumerable<BookResponseDto>> UpdateBookAsync(int id, BookUpdateDto updateData);
     Task<bool> DeleteBookAsync(int id);
