@@ -17,6 +17,7 @@ builder.Services.AddSwaggerGen();
 
 // Service register injection 
 builder.Services.AddScoped<IBookService, BookService>();
+builder.Services.AddScoped<IAuthorService, AuthorService>();
 
 // MySQL Server register
 builder.Services.AddDbContext<BookDbContext>(options =>
@@ -47,7 +48,6 @@ builder.Services.AddCors(options =>
 builder.Services.AddControllers()
     .AddJsonOptions(options => { options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles; });
 
-builder.Services.AddScoped<IBookService, BookService>();
 
 var app = builder.Build();
 

@@ -1,13 +1,14 @@
 using apiNET.Models;
+using apiNET.DTOs.ResponseDtos;
 
 namespace apiNET.Services.Interfaces;
 
 public interface IAuthorService
 {
-    Task<IEnumerable<Author>> GetAuthorsAsync();
-    Task<Author> GetAuthorByIdAsync(int id);
-    Task<IEnumerable<Book>> GetBooksByAuthorAsync(int authorId);
-    Task<Author> AddAuthorAsync(Author author);
-    Task UpdateAuthorAsync(Author author);
-    Task DeleteAuthorAsync(int id);
+    // Task<Author> PostAuthorAsync(Author author);
+    Task<IEnumerable<AuthorResponseDto>> GetAuthorsAsync();
+    Task<AuthorResponseDto> GetAuthorByIdAsync(int id);
+    Task<IEnumerable<BookResponseDto>> GetBooksByAuthorAsync(int authorId);
+    // Task UpdateAuthorAsync(Author author);
+    // Task DeleteAuthorAsync(int id);
 }

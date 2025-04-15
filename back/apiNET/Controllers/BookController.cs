@@ -25,6 +25,10 @@ public class BookController : ControllerBase
         try
         {
             var books = await _bookService.GetBooksAsync();
+            if (books == null)
+            {
+                return NotFound("No se encontraron libros");
+            }
             return Ok(books);
         }
         catch (Exception ex)
@@ -149,7 +153,7 @@ public class BookController : ControllerBase
         }
     }
 
-    [HttpGet("subGenre/{subGenre}")]
+    [HttpGet("sub-genre/{subGenre}")]
     public async Task<IActionResult> SearchBySubGenre(string subGenre)
     {
         try
