@@ -18,6 +18,7 @@ builder.Services.AddSwaggerGen();
 // Service register injection 
 builder.Services.AddScoped<IBookService, BookService>();
 builder.Services.AddScoped<IAuthorService, AuthorService>();
+builder.Services.AddScoped<IGenreService, GenreService>();
 
 // MySQL Server register
 builder.Services.AddDbContext<BookDbContext>(options =>
