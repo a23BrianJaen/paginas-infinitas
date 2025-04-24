@@ -2,8 +2,7 @@
 
 import { Book } from "@/types/types";
 import Image from "next/image";
-import { useRouter } from "next/navigation"
-import { usePathname } from 'next/navigation'
+import { useRouter, usePathname } from "next/navigation"
 
 export default function BookCard({ book }: { book: Book }) {
 

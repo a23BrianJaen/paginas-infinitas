@@ -27,6 +27,7 @@ public class Book
     public string? MaturityRating { get; set; }
     public string? Series { get; set; }
     public string? SeriesOrder { get; set; }
+    public string Tags { get; set; }
     public string? TableOfContents { get; set; }
     public string? FileSize { get; set; }
     public int? WordCount { get; set; }

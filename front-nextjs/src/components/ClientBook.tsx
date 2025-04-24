@@ -1,8 +1,20 @@
+'use client'
+
 import { Book } from "@/types/types";
 import Image from "next/image";
 import BreadCumb from "./Layout/BreadCumb";
+import { useRouter, usePathname } from "next/navigation";
 
 export default function ClientBooks(book: Book) {
+  console.log(book);
+  // const router = useRouter();
+  // const pathname = usePathname();
+
+  const handleAuthorClick = (id: number) => {
+    // router.push(`/genre/${book.genre.id}`);
+    console.log(id);
+  };
+
   return (
     <div>
       <BreadCumb title={book.title} />
@@ -29,12 +41,13 @@ export default function ClientBooks(book: Book) {
 
           <div className="space-y-4">
             <h2 className="text-xl w-fit relative group">
-              <span>Author: <strong className="text-amber-100">{book.author}</strong></span>
+              {/* When user click on the author, it will redirect to the author view page */}
+              <span onClick={() => handleAuthorClick(book.author.id)}>Author: <strong className="text-amber-100 hover:cursor-pointer">{book.author.name}</strong></span>
               <span className="absolute bottom-0 left-1/2 w-0 h-[1px] bg-amber-100 group-hover:w-full group-hover:left-0 transition-all duration-500 ease-in-out"></span>
             </h2>
 
             <h2 className="text-xl w-fit relative group">
-              <span>Genre: <strong className="text-amber-100">{book.genre}</strong></span>
+              <span>Genre: <strong className="text-amber-100">{book.genre.name}</strong></span>
               <span className="absolute bottom-0 left-1/2 w-0 h-[1px] bg-amber-100 group-hover:w-full group-hover:left-0 transition-all duration-500 ease-in-out"></span>
             </h2>
 
